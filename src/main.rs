@@ -12,9 +12,9 @@ const BRIGHTNESS_CHARS: [char; 65] = [
 const RESIZE: u32 = 90;
 
 #[derive(StructOpt)]
-pub struct Cmd {
+struct Cmd {
     #[structopt(parse(from_os_str))]
-    pub image: PathBuf,
+    image: PathBuf,
 }
 
 fn main() -> Result<(), image::ImageError> {
