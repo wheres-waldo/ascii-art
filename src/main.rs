@@ -9,7 +9,7 @@ const BRIGHTNESS_CHARS: [char; 65] = [
     'M', 'W', '&', '8', '%', 'B', '@', '$',
 ];
 
-const RESIZE: u32 = 130;
+const RESIZE: u32 = 90;
 
 #[derive(StructOpt)]
 pub struct Cmd {
@@ -19,7 +19,7 @@ pub struct Cmd {
 
 fn main() -> Result<(), image::ImageError> {
     let opts = Cmd::from_args();
-    let image = image::open(opts.image)?.resize(RESIZE, RESIZE, Nearest);
+    let image = image::open(opts.image)?.resize(RESIZE, RESIZE, Lanczos3);
     let ascii_image = image
         .pixels()
         .map(|(_, _, pixel)| {
@@ -31,7 +31,10 @@ fn main() -> Result<(), image::ImageError> {
         .collect::<Vec<char>>();
 
     for line in ascii_image.chunks(image.width() as usize) {
-        println!("{}", line.iter().collect::<String>());
+        for char in line {
+            print!("{0}{0}", char);
+        }
+        println!();
     }
 
     Ok(())
