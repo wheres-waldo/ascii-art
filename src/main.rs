@@ -13,14 +13,19 @@ fn main() -> Result<(), image::ImageError> {
     let image = image::open(opts.image)?;
     let (x, y) = image.dimensions();
 
-    println!("Successfully loaded image!");
-    println!("Pixel matrix size {} x {}", x, y);
-    println!("Iterating through pixel contents:");
+    println!("Successfully constructed brightness matrix!");
+    println!("Brightness matrix size {} x {}", x, y);
+    println!("Iterating through pixel brightnesses:");
 
-    for (_, _, pixel) in image.pixels() {
-        let rgb = pixel.channels();
-        println!("({}, {}, {})", rgb[0], rgb[1], rgb[2]);
-    }
+    image
+        .pixels()
+        .map(|(_, _, pixel)| {
+            let rgb = pixel.channels();
+            ((rgb[0] as u32 + rgb[1] as u32 + rgb[2] as u32) / 3) as u8
+        })
+        .for_each(|brightness| {
+            println!("{}", brightness);
+        });
 
     Ok(())
 }
