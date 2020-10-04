@@ -1,4 +1,4 @@
-use image::{GenericImageView, Pixel, imageops::FilterType::*};
+use image::{imageops::FilterType::*, GenericImageView, Pixel};
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -20,7 +20,6 @@ pub struct Cmd {
 fn main() -> Result<(), image::ImageError> {
     let opts = Cmd::from_args();
     let image = image::open(opts.image)?.resize(RESIZE, RESIZE, Nearest);
-    let x  = image.width();
     let ascii_image = image
         .pixels()
         .map(|(_, _, pixel)| {
@@ -31,7 +30,7 @@ fn main() -> Result<(), image::ImageError> {
         })
         .collect::<Vec<char>>();
 
-    for line in ascii_image.chunks(x as usize) {
+    for line in ascii_image.chunks(image.width() as usize) {
         println!("{}", line.iter().collect::<String>());
     }
 
