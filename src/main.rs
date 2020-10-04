@@ -1,4 +1,4 @@
-use image::{GenericImageView, Pixel};
+use image::{GenericImageView, Pixel, imageops::FilterType::*};
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -9,6 +9,8 @@ const BRIGHTNESS_CHARS: [char; 65] = [
     'M', 'W', '&', '8', '%', 'B', '@', '$',
 ];
 
+const RESIZE: u32 = 130;
+
 #[derive(StructOpt)]
 pub struct Cmd {
     #[structopt(parse(from_os_str))]
@@ -17,14 +19,9 @@ pub struct Cmd {
 
 fn main() -> Result<(), image::ImageError> {
     let opts = Cmd::from_args();
-    let image = image::open(opts.image)?;
-    let (x, y) = image.dimensions();
-
-    println!("Successfully constructed ASCII matrix!");
-    println!("ASCII matrix size {} x {}", x, y);
-    println!("Iterating through pixel ASCII characters:");
-
-    image
+    let image = image::open(opts.image)?.resize(RESIZE, RESIZE, Nearest);
+    let x  = image.width();
+    let ascii_image = image
         .pixels()
         .map(|(_, _, pixel)| {
             let rgb = pixel.channels();
@@ -32,9 +29,11 @@ fn main() -> Result<(), image::ImageError> {
             let index = (brightness as f32 / 255.0 * 64.0) as usize;
             BRIGHTNESS_CHARS[index]
         })
-        .for_each(|brightness| {
-            println!("{}", brightness);
-        });
+        .collect::<Vec<char>>();
+
+    for line in ascii_image.chunks(x as usize) {
+        println!("{}", line.iter().collect::<String>());
+    }
 
     Ok(())
 }
