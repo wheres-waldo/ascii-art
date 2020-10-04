@@ -1,3 +1,4 @@
+use image::{GenericImageView, Pixel};
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -9,10 +10,17 @@ pub struct Cmd {
 
 fn main() -> Result<(), image::ImageError> {
     let opts = Cmd::from_args();
-    let (x, y) = image::image_dimensions(opts.image)?;
+    let image = image::open(opts.image)?;
+    let (x, y) = image.dimensions();
 
     println!("Successfully loaded image!");
-    println!("Image size {} x {}", x, y);
+    println!("Pixel matrix size {} x {}", x, y);
+    println!("Iterating through pixel contents:");
+
+    for (_, _, pixel) in image.pixels() {
+        let rgb = pixel.channels();
+        println!("({}, {}, {})", rgb[0], rgb[1], rgb[2]);
+    }
 
     Ok(())
 }
