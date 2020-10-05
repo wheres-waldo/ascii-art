@@ -22,3 +22,8 @@ OPTIONS:
 ARGS:
     <image>    Path to image
 ```
+
+## TODO
+
+- Clean up code
+- Fix invert flag for color output
