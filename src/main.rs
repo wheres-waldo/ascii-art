@@ -34,6 +34,7 @@ arg_enum! {
     enum Output {
         Ascii,
         Matrix,
+        Color,
     }
 }
 
@@ -71,7 +72,8 @@ fn main() -> Result<(), image::ImageError> {
 
             match opts.output {
                 Output::Ascii => format!("{}", BRIGHTNESS_CHARS[index]).white(),
-                Output::Matrix => format!("{}", '▉').truecolor(0, brightness as u8, 0)
+                Output::Matrix => format!("{}", '▉').truecolor(0, brightness as u8, 0),
+                Output::Color => format!("{}", '▉').truecolor(rgb[0], rgb[1], rgb[2]),
             }
         })
         .collect::<Vec<ColoredString>>();
