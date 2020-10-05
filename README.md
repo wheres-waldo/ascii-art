@@ -27,3 +27,4 @@ ARGS:
 
 - Clean up code
 - Fix invert flag for color output
+- Combine printing loops into single iter
